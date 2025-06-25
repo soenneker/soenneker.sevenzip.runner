@@ -7,10 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Soenneker.GitHub.Repositories.Releases.Abstract;
 using Soenneker.Managers.Runners.Abstract;
-using Soenneker.SevenZip.Runner.Utils.Abstract;
 using Soenneker.Utils.Directory.Abstract;
 using Soenneker.Utils.File.Abstract;
-using Soenneker.Utils.File.Download.Abstract;
 
 namespace Soenneker.SevenZip.Runner;
 
@@ -20,7 +18,6 @@ public sealed class ConsoleHostedService : IHostedService
 
     private readonly IHostApplicationLifetime _appLifetime;
     private readonly IRunnersManager _runnersManager;
-    private readonly IFileDownloadUtil _fileDownloadUtil;
     private readonly IGitHubRepositoriesReleasesUtil _releasesUtil;
     private readonly IDirectoryUtil _directoryUtil;
     private readonly IFileUtil _fileUtil;
@@ -28,12 +25,12 @@ public sealed class ConsoleHostedService : IHostedService
     private int? _exitCode;
 
     public ConsoleHostedService(ILogger<ConsoleHostedService> logger, IHostApplicationLifetime appLifetime,
-        IRunnersManager runnersManager, IFileDownloadUtil fileDownloadUtil, IGitHubRepositoriesReleasesUtil releasesUtil, IDirectoryUtil directoryUtil, IFileUtil fileUtil)
+        IRunnersManager runnersManager, IGitHubRepositoriesReleasesUtil releasesUtil, 
+        IDirectoryUtil directoryUtil, IFileUtil fileUtil)
     {
         _logger = logger;
         _appLifetime = appLifetime;
         _runnersManager = runnersManager;
-        _fileDownloadUtil = fileDownloadUtil;
         _releasesUtil = releasesUtil;
         _directoryUtil = directoryUtil;
         _fileUtil = fileUtil;

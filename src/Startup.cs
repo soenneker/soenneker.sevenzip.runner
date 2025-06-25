@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Soenneker.Git.Util.Registrars;
 using Soenneker.SevenZip.Runner.Utils;
 using Soenneker.SevenZip.Runner.Utils.Abstract;
 using Soenneker.Managers.Runners.Registrars;
-using Soenneker.Utils.File.Download.Registrars;
 using Soenneker.GitHub.Repositories.Releases.Registrars;
 
 namespace Soenneker.SevenZip.Runner;
@@ -23,7 +21,6 @@ public static class Startup
     {
         services.AddHostedService<ConsoleHostedService>()
                 .AddScoped<IFileOperationsUtil, FileOperationsUtil>()
-                .AddFileDownloadUtilAsScoped()
                 .AddGitHubRepositoriesReleasesUtilAsScoped()
                 .AddRunnersManagerAsScoped();
 

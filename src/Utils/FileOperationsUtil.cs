@@ -11,7 +11,6 @@ using Soenneker.Utils.Dotnet.NuGet.Abstract;
 using Soenneker.Utils.Environment;
 using Soenneker.Utils.File.Abstract;
 using Soenneker.Utils.FileSync.Abstract;
-using Soenneker.Utils.SHA3;
 using Soenneker.Utils.SHA3.Abstract;
 
 namespace Soenneker.SevenZip.Runner.Utils;
