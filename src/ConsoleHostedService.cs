@@ -9,7 +9,6 @@ using Soenneker.Compression.SevenZip.Abstract;
 using Soenneker.GitHub.Repositories.Releases.Abstract;
 using Soenneker.Managers.Runners.Abstract;
 using Soenneker.Utils.Directory.Abstract;
-using Soenneker.Utils.File.Abstract;
 
 namespace Soenneker.SevenZip.Runner;
 
@@ -21,20 +20,18 @@ public sealed class ConsoleHostedService : IHostedService
     private readonly IRunnersManager _runnersManager;
     private readonly IGitHubRepositoriesReleasesUtil _releasesUtil;
     private readonly IDirectoryUtil _directoryUtil;
-    private readonly IFileUtil _fileUtil;
     private readonly ISevenZipCompressionUtil _sevenZipUtil;
 
     private int? _exitCode;
 
     public ConsoleHostedService(ILogger<ConsoleHostedService> logger, IHostApplicationLifetime appLifetime, IRunnersManager runnersManager,
-        IGitHubRepositoriesReleasesUtil releasesUtil, IDirectoryUtil directoryUtil, IFileUtil fileUtil, ISevenZipCompressionUtil sevenZipUtil)
+        IGitHubRepositoriesReleasesUtil releasesUtil, IDirectoryUtil directoryUtil, ISevenZipCompressionUtil sevenZipUtil)
     {
         _logger = logger;
         _appLifetime = appLifetime;
         _runnersManager = runnersManager;
         _releasesUtil = releasesUtil;
         _directoryUtil = directoryUtil;
-        _fileUtil = fileUtil;
         _sevenZipUtil = sevenZipUtil;
     }
 
@@ -55,7 +52,7 @@ public sealed class ConsoleHostedService : IHostedService
                     if (asset == null)
                         throw new FileNotFoundException("Could not find asset.");
 
-                    string extractionDir = await _sevenZipUtil.Extract(asset, cancellation: cancellationToken);
+                    string extractionDir = await _sevenZipUtil.ExtractAdvanced(asset, null, false, cancellationToken);
 
                     string finishedAssetPath = Path.Combine(extractionDir, Constants.FileName);
 
