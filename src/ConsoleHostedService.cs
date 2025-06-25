@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Soenneker.Compression.SevenZip.Abstract;
 using Soenneker.GitHub.Repositories.Releases.Abstract;
 using Soenneker.Managers.Runners.Abstract;
 using Soenneker.Utils.Directory.Abstract;
@@ -21,11 +22,12 @@ public sealed class ConsoleHostedService : IHostedService
     private readonly IGitHubRepositoriesReleasesUtil _releasesUtil;
     private readonly IDirectoryUtil _directoryUtil;
     private readonly IFileUtil _fileUtil;
+    private readonly ISevenZipCompressionUtil _sevenZipUtil;
 
     private int? _exitCode;
 
     public ConsoleHostedService(ILogger<ConsoleHostedService> logger, IHostApplicationLifetime appLifetime, IRunnersManager runnersManager,
-        IGitHubRepositoriesReleasesUtil releasesUtil, IDirectoryUtil directoryUtil, IFileUtil fileUtil)
+        IGitHubRepositoriesReleasesUtil releasesUtil, IDirectoryUtil directoryUtil, IFileUtil fileUtil, ISevenZipCompressionUtil sevenZipUtil)
     {
         _logger = logger;
         _appLifetime = appLifetime;
@@ -33,6 +35,7 @@ public sealed class ConsoleHostedService : IHostedService
         _releasesUtil = releasesUtil;
         _directoryUtil = directoryUtil;
         _fileUtil = fileUtil;
+        _sevenZipUtil = sevenZipUtil;
     }
 
     public Task StartAsync(CancellationToken cancellationToken = default)
@@ -47,14 +50,14 @@ public sealed class ConsoleHostedService : IHostedService
                 {
                     string downloadDir = await _directoryUtil.CreateTempDirectory(cancellationToken);
 
-                    string? asset = await _releasesUtil.DownloadReleaseAssetByNamePattern("ip7z", "7zip", downloadDir, ["x64.exe"], cancellationToken);
+                    string? asset = await _releasesUtil.DownloadReleaseAssetByNamePattern("ip7z", "7zip", downloadDir, ["extra.7z"], cancellationToken);
 
                     if (asset == null)
                         throw new FileNotFoundException("Could not find asset.");
 
-                    string finishedAssetPath = Path.Combine(downloadDir, Constants.FileName);
+                    string extractionDir = await _sevenZipUtil.Extract(asset, cancellation: cancellationToken);
 
-                    await _fileUtil.Copy(Path.Combine(downloadDir, asset), finishedAssetPath, cancellationToken: cancellationToken);
+                    string finishedAssetPath = Path.Combine(extractionDir, Constants.FileName);
 
                     await _runnersManager.PushIfChangesNeeded(finishedAssetPath, Constants.FileName, Constants.Library,
                         $"https://github.com/soenneker/{Constants.Library}", cancellationToken);

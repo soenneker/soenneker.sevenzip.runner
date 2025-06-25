@@ -3,6 +3,7 @@ using Soenneker.SevenZip.Runner.Utils;
 using Soenneker.SevenZip.Runner.Utils.Abstract;
 using Soenneker.Managers.Runners.Registrars;
 using Soenneker.GitHub.Repositories.Releases.Registrars;
+using Soenneker.Compression.SevenZip.Registrars;
 
 namespace Soenneker.SevenZip.Runner;
 
@@ -22,7 +23,8 @@ public static class Startup
         services.AddHostedService<ConsoleHostedService>()
                 .AddScoped<IFileOperationsUtil, FileOperationsUtil>()
                 .AddGitHubRepositoriesReleasesUtilAsScoped()
-                .AddRunnersManagerAsScoped();
+                .AddRunnersManagerAsScoped()
+                .AddSevenZipCompressionUtilAsScoped();
 
         return services;
     }
