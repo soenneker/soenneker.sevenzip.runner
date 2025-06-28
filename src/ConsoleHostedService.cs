@@ -54,7 +54,7 @@ public sealed class ConsoleHostedService : IHostedService
 
                     string extractionDir = await _sevenZipUtil.ExtractAdvanced(asset, null, false, cancellationToken);
 
-                    string finishedAssetPath = Path.Combine(extractionDir, Constants.FileName);
+                    string finishedAssetPath = Path.Combine(extractionDir, "x64", Constants.FileName);
 
                     await _runnersManager.PushIfChangesNeeded(finishedAssetPath, Constants.FileName, Constants.Library,
                         $"https://github.com/soenneker/{Constants.Library}", cancellationToken);
