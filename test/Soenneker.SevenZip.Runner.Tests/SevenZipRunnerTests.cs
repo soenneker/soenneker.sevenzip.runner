@@ -1,16 +1,15 @@
-﻿using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.SevenZip.Runner.Tests;
 
-[Collection("Collection")]
-public sealed class SevenZipRunnerTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public sealed class SevenZipRunnerTests : HostedUnitTest
 {
-    public SevenZipRunnerTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public SevenZipRunnerTests(Host host) : base(host)
     {
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
