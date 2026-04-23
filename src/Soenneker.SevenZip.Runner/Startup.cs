@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Soenneker.Managers.Runners.Registrars;
 using Soenneker.GitHub.Repositories.Releases.Registrars;
 using Soenneker.Compression.SevenZip.Registrars;
@@ -19,9 +19,9 @@ public static class Startup
     public static IServiceCollection SetupIoC(this IServiceCollection services)
     {
         services.AddHostedService<ConsoleHostedService>()
-                .AddGitHubRepositoriesReleasesUtilAsScoped()
-                .AddRunnersManagerAsScoped()
-                .AddSevenZipCompressionUtilAsScoped();
+                .AddGitHubRepositoriesReleasesUtilAsSingleton()
+                .AddRunnersManagerAsSingleton()
+                .AddSevenZipCompressionUtilAsSingleton();
 
         return services;
     }
