@@ -50,10 +50,11 @@ public sealed class ConsoleHostedService : IHostedService
             Task.Run(async () =>
             {
                 _logger.LogInformation("Running console hosted service ...");
+                string? downloadDir = null;
 
                 try
                 {
-                    string downloadDir = await _directoryUtil.CreateTempDirectory(cancellationToken);
+                    downloadDir = await _directoryUtil.CreateTempDirectory(cancellationToken);
 
                     string? asset = await _releasesUtil.DownloadReleaseAssetByNamePattern("ip7z", "7zip", downloadDir, ["extra.7z"], cancellationToken);
 
@@ -83,6 +84,18 @@ public sealed class ConsoleHostedService : IHostedService
                 }
                 finally
                 {
+                    if (downloadDir is not null)
+                    {
+                        try
+                        {
+                            await _directoryUtil.DeleteIfExists(downloadDir, CancellationToken.None);
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogWarning(e, "Unable to remove temporary directory {Directory}", downloadDir);
+                        }
+                    }
+
                     // Stop the application once the work is done
                     _appLifetime.StopApplication();
                 }
